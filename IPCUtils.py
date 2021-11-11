@@ -19,6 +19,9 @@ from awsiot.greengrasscoreipc.model import (
     ConfigurationUpdateEvents,
     GetConfigurationRequest,
     PublishToIoTCoreRequest,
+    PublishToTopicRequest,
+    PublishMessage,
+    JsonMessage,
     SubscribeToConfigurationUpdateRequest,
 )
 
@@ -63,6 +66,29 @@ class IPCUtils:
             operation.get_response().result(config_utils.TIMEOUT)
         except Exception as e:
             config_utils.logger.error("Exception occured during publish: {}".format(e))
+
+    def publish_results_to_pubsub_ipc(self, PAYLOAD):
+        r"""
+        Ipc client creates a request and activates the operation to publish messages to the Greengrass
+        IPC Pubsub
+
+        :param PAYLOAD: An dictionary object with inference results.
+        """
+        try:
+            request = PublishToTopicRequest()
+            request.topic = config_utils.TOPIC
+            publish_message = PublishMessage()
+            publish_message.json_message = JsonMessage()
+            publish_message.json_message.message = PAYLOAD
+            request.publish_message = publish_message
+            operation = ipc_client.new_publish_to_topic()
+            config_utils.logger.info("Publishing results to the Greengrass IPC Pubsub...")
+            operation.activate(request)
+            future = operation.get_response()
+            future.result(config_utils.TIMEOUT)
+        except Exception as e:
+            config_utils.logger.error("Exception occured during publish: {}".format(e))
+
 
     def get_configuration(self):
         r"""

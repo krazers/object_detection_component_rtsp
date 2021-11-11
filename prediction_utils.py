@@ -227,7 +227,7 @@ def predict(image_data):
         config_utils.logger.info(dumps(PAYLOAD))
 
         if config_utils.TOPIC.strip() != "":
-            ipc_utils.IPCUtils().publish_results_to_cloud(PAYLOAD)
+            ipc_utils.IPCUtils().publish_results_to_pubsub_ipc(PAYLOAD)
         else:
             config_utils.logger.info("No topic set to publish the inference results to the cloud.")
 
