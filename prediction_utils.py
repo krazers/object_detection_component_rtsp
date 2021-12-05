@@ -314,6 +314,7 @@ def predict_from_cam_thread(use_rtsp, url):
                         raise RuntimeError("Failed to get frame from the stream")
             if cvimage is not None:
                 predict_from_image(cvimage)
+                sleep(1)
             else:
                 if(use_rtsp):
                     config_utils.CAMERA = Camera(url)
